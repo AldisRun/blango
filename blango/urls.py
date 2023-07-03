@@ -29,7 +29,6 @@ urlpatterns = [
     # re_path(r'^oauth/', include('social_django.urls', namespace='social')),  # Keep
 
     # Sample applications
-    path('blog/', include('blog.urls')),
 ]
 
 # Serve the static HTML

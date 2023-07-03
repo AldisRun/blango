@@ -1,10 +1,9 @@
 from django.shortcuts import render
-from django.http import HttpResponse
-import logging
-
-logger = logging.getLogger(__name__)
+from django.utils import timezone
+from blog.models import Post
 
 def index(request):
-    return render(request, "blog/index.html")
+    posts = Post.objects.filter(published_at__lte=timezone.now()).exclude(published_at=None)
+    return render(request, "blog/index.html", {"posts": posts})
 
 # Create your views here.
