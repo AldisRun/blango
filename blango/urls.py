@@ -14,12 +14,21 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 import os
+import debug_toolbar
+from django.conf import settings
 from django.contrib import admin
 from django.urls import path, include
+import blog.views
 
 urlpatterns = [
     path('', include('blog.urls')),
     path('admin/', admin.site.urls),  # Keep
     path('accounts/', include('django.contrib.auth.urls')),  # Keep
+    path("ip/", blog.views.get_ip),
     # re_path(r'^oauth/', include('social_django.urls', namespace='social')),  # Keep
 ]
+
+if settings.DEBUG:
+    urlpatterns += [
+        path("__debug__/", include(debug_toolbar.urls)),
+    ]

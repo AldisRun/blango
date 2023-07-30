@@ -12,6 +12,8 @@ class Dev(Configuration):
   # SECURITY WARNING: keep the secret key used in production secret!
   SECRET_KEY = 'django-insecure-18my@44=5*gpmb1grcg#@1^6c5bsd6#r4pmln9z8k*rl2xpz2v'
 
+  INTERNAL_IPS = ["192.168.11.179", "192.168.17.65", "172.20.10.3"]
+
   # SECURITY WARNING: don't run with debug turned on in production!
   DEBUG = values.BooleanValue(True)
 
@@ -24,7 +26,6 @@ class Dev(Configuration):
   CSRF_COOKIE_SAMESITE = 'None'
   SESSION_COOKIE_SAMESITE = 'None'
 
-
   # Application definition
   INSTALLED_APPS = [
       'django.contrib.admin',
@@ -36,8 +37,10 @@ class Dev(Configuration):
       'blog',
       'crispy_forms',
       'crispy_bootstrap5',
+      'debug_toolbar',
   ]
   MIDDLEWARE = [
+      'debug_toolbar.middleware.DebugToolbarMiddleware',
       'django.middleware.security.SecurityMiddleware',
       'django.contrib.sessions.middleware.SessionMiddleware',
       'django.middleware.common.CommonMiddleware',
