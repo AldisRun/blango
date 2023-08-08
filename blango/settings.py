@@ -34,6 +34,7 @@ class Dev(Configuration):
       'django.contrib.sessions',
       'django.contrib.messages',
       'django.contrib.staticfiles',
+      'blango_auth',
       'blog',
       'crispy_forms',
       'crispy_bootstrap5',
@@ -49,6 +50,8 @@ class Dev(Configuration):
       'django.contrib.messages.middleware.MessageMiddleware',
   #    'django.middleware.clickjacking.XFrameOptionsMiddleware',
   ]
+
+  AUTH_USER_MODEL = "blango_auth.User"
 
   CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 
@@ -171,3 +174,4 @@ class Dev(Configuration):
 class Prod(Dev):
   DEBUG = False
   SECRET_KEY = values.SecretValue()
+  AUTH_USER_MODEL = "blango_auth.User"
