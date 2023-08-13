@@ -51,6 +51,12 @@ class Dev(Configuration):
   #    'django.middleware.clickjacking.XFrameOptionsMiddleware',
   ]
 
+  EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+
+  ACCOUNT_ACTIVATION_DAYS = 7
+  
+  REGISTRATION_OPEN = True
+
   AUTH_USER_MODEL = "blango_auth.User"
 
   CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
