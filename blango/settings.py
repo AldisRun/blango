@@ -26,12 +26,18 @@ class Dev(Configuration):
   CSRF_COOKIE_SAMESITE = 'None'
   SESSION_COOKIE_SAMESITE = 'None'
 
+  ACCOUNT_USER_MODEL_USERNAME_FIELD = None
+  ACCOUNT_EMAIL_REQUIRED = True
+  ACCOUNT_USERNAME_REQUIRED = False
+  ACCOUNT_AUTHENTICATION_METHOD = "email"
+
   # Application definition
   INSTALLED_APPS = [
       'django.contrib.admin',
       'django.contrib.auth',
       'django.contrib.contenttypes',
       'django.contrib.sessions',
+      'django.contrib.sites',
       'django.contrib.messages',
       'django.contrib.staticfiles',
       'blango_auth',
@@ -39,6 +45,10 @@ class Dev(Configuration):
       'crispy_forms',
       'crispy_bootstrap5',
       'debug_toolbar',
+      'allauth',
+      'allauth.account',
+      'allauth.socialaccount',
+      'allauth.socialaccount.providers.google',
   ]
   MIDDLEWARE = [
       'debug_toolbar.middleware.DebugToolbarMiddleware',
@@ -50,6 +60,10 @@ class Dev(Configuration):
       'django.contrib.messages.middleware.MessageMiddleware',
   #    'django.middleware.clickjacking.XFrameOptionsMiddleware',
   ]
+
+  ACCOUNT_EMAIL_VERIFICATION = True
+
+  SITE_ID = 1
 
   EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
