@@ -36,8 +36,8 @@ urlpatterns = [
       RegistrationView.as_view(form_class=BlangoRegistrationForm),
       name="django_registration_register",
     ),
-    path("accounts/", include("django_registration.backends.activation.urls")),
-    # re_path(r'^oauth/', include('social_django.urls', namespace='social')),  # Keep
+    path("accounts/", include("django_registration.backends.activation.urls")), # re_path(r'^oauth/', include('social_django.urls', namespace='social')),  # Keep
+    path("api/v1/", include("blog.api_urls")),
 ]
 
 if settings.DEBUG:
