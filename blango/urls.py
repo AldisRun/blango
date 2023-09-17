@@ -37,7 +37,7 @@ urlpatterns = [
       name="django_registration_register",
     ),
     path("accounts/", include("django_registration.backends.activation.urls")), # re_path(r'^oauth/', include('social_django.urls', namespace='social')),  # Keep
-    path("api/v1/", include("blog.api_urls")),
+    path("api/v1/", include("blog.api.urls")),
 ]
 
 if settings.DEBUG:
