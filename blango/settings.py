@@ -45,6 +45,7 @@ class Dev(Configuration):
       'crispy_forms',
       'crispy_bootstrap5',
       'debug_toolbar',
+      'rest_framework.authtoken',
       'rest_framework',
       'allauth',
       'allauth.account',
@@ -63,6 +64,14 @@ class Dev(Configuration):
   ]
 
   ACCOUNT_EMAIL_VERIFICATION = True
+
+  REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.BasicAuthentication",
+        "rest_framework.authentication.SessionAuthentication",
+        "rest_framework.authentication.TokenAuthentication",
+    ]
+  }
 
   SITE_ID = 1
 
