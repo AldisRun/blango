@@ -1,4 +1,5 @@
 from rest_framework import generics, viewsets
+from rest_framework.filters import OrderingFilter
 from blog.api.permissions import AuthorModifyOrReadOnly, IsAdminUserForObject
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -13,17 +14,23 @@ from django.db.models import Q
 from django.utils import timezone
 from datetime import timedelta
 from django.http import Http404
+from django.views.decorators.csrf import csrf_exempt
+import django_filters.rest_framework
+from blog.api.filters import PostFilterSet
 
 class PostViewSet(viewsets.ModelViewSet):
+    filterset_class = PostFilterSet
+    filter_backends = [django_filters.rest_framework.DjangoFilterBackend, OrderingFilter]
+    ordering_fields = [
+        'published_at', 'author__email', 'title', 'slug', 'summary', 'content'
+    ]
+    ordering = ['published_at']
     queryset = Post.objects.all()
 
     def get_queryset(self):
         if self.request.user.is_anonymous:
-            # published only
             queryset = self.queryset.filter(published_at__lte=timezone.now())
-
         elif not self.request.user.is_staff:
-            # allow all
             queryset = self.queryset
         else:
             queryset = self.queryset.filter(
@@ -33,7 +40,6 @@ class PostViewSet(viewsets.ModelViewSet):
         time_period_name = self.kwargs.get("period_name")
 
         if not time_period_name:
-            # no further filtering required
             return queryset
 
         if time_period_name == "new":
@@ -65,11 +71,19 @@ class PostViewSet(viewsets.ModelViewSet):
         if request.user.is_anonymous:
             raise PermissionDenied("You must be logged in to see which Posts are yours")
         posts = self.get_queryset().filter(author=request.user)
+
+        page = self.paginate_queryset(posts)
+
+        if page is not None:
+            serializer = PostSerializer(page, many=True, context={"request": request})
+            return self.get_paginated_response(serializer.data)
+
         serializer = PostSerializer(posts, many=True, context={"request": request})
         return Response(serializer.data)
 
     @method_decorator(cache_page(120))
     @method_decorator(vary_on_headers("Authorization", "Cookie"))
+    @csrf_exempt
     def list(self, *args, **kwargs):
         return super(PostViewSet, self).list(*args, **kwargs)
 
@@ -79,6 +93,7 @@ class UserDetail(generics.RetrieveAPIView):
     serializer_class = UserSerializer
 
     @method_decorator(cache_page(300))
+    @csrf_exempt
     def get(self, *args, **kwargs):
         return super(UserDetail, self).get(*args, *kwargs)
 
@@ -87,17 +102,26 @@ class TagViewSet(viewsets.ModelViewSet):
     serializer_class = TagSerializer
 
     @action(methods=["get"], detail=True, name="Posts with the Tag")
+    @csrf_exempt
     def posts(self, request, pk=None):
         tag = self.get_object()
+        page = self.paginate_queryset(tag.posts)
+        if page is not None:
+            post_serializer = PostSerializer(
+                page, many=True, context={"request": request}
+            )
+            return self.get_paginated_response(post_serializer.data)
         post_serializer = PostSerializer(
             tag.posts, many=True, context={"request": request}
         )
         return Response(post_serializer.data)
 
     @method_decorator(cache_page(300))
+    @csrf_exempt
     def list(self, *args, **kwargs):
         return super(TagViewSet, self).list(*args, **kwargs)
 
     @method_decorator(cache_page(300))
+    @csrf_exempt
     def retrieve(self, *args, **kwargs):
         return super(TagViewSet, self).retrieve(*args, **kwargs)
