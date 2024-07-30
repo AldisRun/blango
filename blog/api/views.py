@@ -19,11 +19,9 @@ import django_filters.rest_framework
 from blog.api.filters import PostFilterSet
 
 class PostViewSet(viewsets.ModelViewSet):
+    ordering_fields = ['published_at', 'author__email', 'title', 'slug', 'summary', 'content']
     filterset_class = PostFilterSet
     filter_backends = [django_filters.rest_framework.DjangoFilterBackend, OrderingFilter]
-    ordering_fields = [
-        'published_at', 'author__email', 'title', 'slug', 'summary', 'content'
-    ]
     ordering = ['published_at']
     queryset = Post.objects.all()
 

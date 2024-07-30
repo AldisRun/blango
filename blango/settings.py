@@ -2,6 +2,7 @@ import os, dj_database_url
 import mimetypes
 from pathlib import Path
 from configurations import Configuration, values
+from datetime import timedelta
 
 mimetypes.add_type("text/css", ".css", True)
 
@@ -11,6 +12,10 @@ class Dev(Configuration):
 
   # SECURITY WARNING: keep the secret key used in production secret!
   SECRET_KEY = 'django-insecure-18my@44=5*gpmb1grcg#@1^6c5bsd6#r4pmln9z8k*rl2xpz2v'
+  SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+  }
 
   INTERNAL_IPS = ["192.168.11.179", "192.168.17.65", "172.20.10.3"]
 
@@ -45,8 +50,9 @@ class Dev(Configuration):
       'crispy_forms',
       'crispy_bootstrap5',
       'debug_toolbar',
-      'rest_framework.authtoken',
       'rest_framework',
+      'rest_framework.authtoken',
+      'rest_framework_simplejwt',
       'allauth',
       'allauth.account',
       'allauth.socialaccount',
@@ -80,6 +86,7 @@ class Dev(Configuration):
         "rest_framework.authentication.BasicAuthentication",
         "rest_framework.authentication.SessionAuthentication",
         "rest_framework.authentication.TokenAuthentication",
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
     ],
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.IsAuthenticatedOrReadOnly"
@@ -103,6 +110,7 @@ class Dev(Configuration):
       "django_filters.rest_framework.DjangoFilterBackend",
       "rest_framework.filters.OrderingFilter",
         ],
+    
   }
 
   SITE_ID = 1
@@ -110,7 +118,7 @@ class Dev(Configuration):
   EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
   ACCOUNT_ACTIVATION_DAYS = 7
-  
+
   REGISTRATION_OPEN = True
 
   AUTH_USER_MODEL = "blango_auth.User"
@@ -122,22 +130,22 @@ class Dev(Configuration):
   ROOT_URLCONF = 'blango.urls'
 
   TEMPLATES = [
-      {
-          'BACKEND': 'django.template.backends.django.DjangoTemplates',
-          'DIRS': [os.path.join(BASE_DIR, 'templates')],
-          'APP_DIRS': True,
-          'OPTIONS': {
-              'context_processors': [
-                  'django.template.context_processors.debug',
-                  'django.template.context_processors.request',
-                  'django.contrib.auth.context_processors.auth',
-                  'django.contrib.messages.context_processors.messages',
-                  # 'blango.context_processors.settings',      # Add
-                  # 'social_django.context_processors.backends',  # Add
-                  # 'social_django.context_processors.login_redirect', # Add
-              ],
-          },
-      },
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+                # 'blango.context_processors.settings',      # Add
+                # 'social_django.context_processors.backends',  # Add
+                # 'social_django.context_processors.login_redirect', # Add
+            ],
+        },
+    },
   ]
 
   WSGI_APPLICATION = 'blango.wsgi.application'

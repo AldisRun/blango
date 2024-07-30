@@ -40,10 +40,19 @@ class PostSerializer(serializers.ModelSerializer):
 class PostDetailSerializer(PostSerializer):
     comments = CommentSerializer(many=True)
 
+    class Meta(PostSerializer.Meta):
+        fields = PostSerializer.Meta.fields + ['comments']
+
     def update(self, instance, validated_data):
-        comments = validated_data.pop("comments")
+        comments = validated_data.pop("comments", [])
+        tags_data = validated_data.pop("tags", [])
 
         instance = super(PostDetailSerializer, self).update(instance, validated_data)
+
+        instance.tags.clear()
+        for tag_data in tags_data:
+            tag, created = Tag.objects.get_or_create(value=tag_data)
+            instance.tags.add(tag)
 
         for comment_data in comments:
             if comment_data.get("id"):
@@ -59,4 +68,4 @@ class PostDetailSerializer(PostSerializer):
 class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
-        fields = "__all__"
+        fields = ['url', 'id', 'value']
