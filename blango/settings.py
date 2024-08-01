@@ -59,6 +59,7 @@ class Dev(Configuration):
       'allauth.socialaccount.providers.google',
       'drf_yasg',
       'django_filters',
+      'versatileimagefield',
   ]
   
   SWAGGER_SETTINGS = {
@@ -128,6 +129,10 @@ class Dev(Configuration):
   CRISPY_TEMPLATE_PACK = "bootstrap5"
 
   ROOT_URLCONF = 'blango.urls'
+
+  MEDIA_ROOT = BASE_DIR / "media"
+
+  MEDIA_URL = "/media/"
 
   TEMPLATES = [
     {

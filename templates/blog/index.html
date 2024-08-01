@@ -6,6 +6,21 @@
     {% row "border-bottom" %}
         <div class="col">
             <h3>{{ post.title }}</h3>
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <style>
+                    .rounded-image {
+                        border-radius: 15%; /* This will make the image completely round */
+                    }
+                </style>
+            </head>
+            <body>
+                {% if post.hero_image %}
+                    <img src="{{ post.hero_image.thumbnail.100x100.url }}" class="rounded-image"/>
+                {% endif %}
+            </body>
+            </html>
             {% include "blog/post-byline.html" %}
             <p>{{ post.summary }}</p>
             <p>
